@@ -1,0 +1,24 @@
+{% extends 'produtividade/base.html' %}
+{% block title %}Cadastro{% endblock %}
+{% block content %}
+<h1>Cadastro</h1>
+
+<form method="post">
+  {% csrf_token %}
+
+  {% for field in form.visible_fields %}
+    <div class="input-group">
+      <label for="{{ field.id_for_label }}" class="input-label">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}
+        <small class="input-helper">{{ field.help_text }}</small>
+      {% endif %}
+      {% for error in field.errors %}
+        <div class="input-helper error">{{ error }}</div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+
+  <button class="btn primary" type="submit">Salvar</button>
+</form>
+{% endblock %}

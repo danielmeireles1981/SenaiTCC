@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
+    h1 { text-align:center; margin-bottom: 8px; }
+    h2 { margin: 10px 0 6px; }
+    .meta { text-align:center; margin-bottom: 12px; }
+    .chart { text-align:center; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 4px; }
+    th { background: #eee; }
+  </style>
+</head>
+<body>
+  <h1>Relatório de Produtividade • {{ grupo.nome }}</h1>
+  <div class="meta">Período: últimos {{ dias }} dias</div>
+
+  {% if bar_png_b64 %}
+    <h2>Média geral por aluno</h2>
+    <div class="chart"><img src="data:image/png;base64,{{ bar_png_b64 }}" width="600"/></div>
+  {% endif %}
+
+  {% if line_png_b64 %}
+    <h2>Evolução média do grupo (por dia)</h2>
+    <div class="chart"><img src="data:image/png;base64,{{ line_png_b64 }}" width="600"/></div>
+  {% endif %}
+
+  <h2>Detalhamento</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th><th>Aluno</th><th>Projeto</th>
+        <th>Pont.</th><th>Com.</th><th>Qual.</th><th>Entrega</th><th>Resolução</th><th>Média</th><th>Obs.</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in entradas %}
+        <tr>
+          <td>{{ e.data }}</td>
+          <td>{{ e.aluno.nome }}</td>
+          <td>{{ e.projeto.titulo }}</td>
+          <td>{{ e.pontualidade }}</td>
+          <td>{{ e.comunicacao }}</td>
+          <td>{{ e.qualidade_codigo }}</td>
+          <td>{{ e.entrega_tarefas }}</td>
+          <td>{{ e.resolucao_problemas }}</td>
+          <td>{{ e.total|floatformat:2 }}</td>
+          <td>{{ e.observacoes }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{% extends 'produtividade/base.html' %}
+{% block title %}Projetos{% endblock %}
+{% block content %}
+  <div class="list-header">
+    <h1>Projetos</h1>
+    <a class="btn primary" href="{% url 'produtividade:project_create' %}">Novo Projeto</a>
+  </div>
+  <table class="table">
+    <thead><tr><th>Título</th><th>Grupo</th><th>Orientador</th><th>Ações</th></tr></thead>
+    <tbody>
+      {% for p in projetos %}
+        <tr>
+          <td>{{ p.titulo }}</td>
+          <td>{{ p.grupo }}</td>
+          <td>{{ p.orientador|default:"—" }}</td>
+          <td><a class="btn" href="{% url 'produtividade:project_update' p.id %}">Editar</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4">Nenhum projeto cadastrado.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

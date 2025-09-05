@@ -1,0 +1,63 @@
+{% extends 'produtividade/base.html' %}
+{% block title %}Lançar Produtividade{% endblock %}
+{% block content %}
+  <h1>Lançar Produtividade • {{ grupo.nome }}</h1>
+
+  <form method="get" class="filters">
+  <div class="input-group">
+    <label class="input-label">Data</label>
+    <input type="date" name="data" value="{{ data }}" class="input-field">
+  </div>
+
+  <div class="input-group">
+    <label class="input-label">Projeto</label>
+    <select name="projeto" class="input-field">
+      {% for proj in projetos %}
+        <option value="{{ proj.id }}" {% if proj.id|stringformat:"s" == request.GET.projeto %}selected{% endif %}>
+          {{ proj.titulo }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <button class="btn">Carregar</button>
+</form>
+
+
+  <form method="post">
+  {% csrf_token %}
+  {{ formset.management_form }}  <!-- 👈 OBRIGATÓRIO PARA FORMSETS -->
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Aluno</th>
+        <th>Pontualidade</th>
+        <th>Comunicação</th>
+        <th>Qualidade do Código</th>
+        <th>Entrega de Tarefas</th>
+        <th>Resolução de Problemas</th>
+        <th>Observações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for form in formset %}
+        <tr>
+          <td>
+            {{ form.aluno_id }} {{ form.aluno_nome }}
+            {{ form.data }} {{ form.projeto }}
+          </td>
+          <td>{{ form.pontualidade }}</td>
+          <td>{{ form.comunicacao }}</td>
+          <td>{{ form.qualidade_codigo }}</td>
+          <td>{{ form.entrega_tarefas }}</td>
+          <td>{{ form.resolucao_problemas }}</td>
+          <td>{{ form.observacoes }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <button class="btn primary" type="submit">Salvar Lançamentos</button>
+</form>
+{% endblock %}

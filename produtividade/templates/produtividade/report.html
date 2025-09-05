@@ -1,0 +1,48 @@
+{% extends 'produtividade/base.html' %}
+{% block title %}Relatório do Grupo{% endblock %}
+{% block content %}
+  <div class="list-header">
+    <h1>Relatório • {{ grupo.nome }}</h1>
+    <div class="gap">
+      <a class="btn" href="{% url 'produtividade:launch_productivity' grupo.id %}">Lançar/Editar</a>
+      <a class="btn" href="{% url 'produtividade:group_report_pdf' grupo.id %}?dias={{ dias }}">Exportar PDF</a>
+      <a class="btn" href="{% url 'produtividade:send_report_email' grupo.id %}?dias={{ dias }}">Enviar à Coordenação</a>
+    </div>
+  </div>
+
+  <form method="get" class="filters">
+    <label>Últimos (dias): <input type="number" name="dias" value="{{ dias }}" min="1"></label>
+    <button class="btn">Aplicar</button>
+  </form>
+
+  <section class="cards">
+    <div class="card">
+      <h3>Média geral por aluno</h3>
+      <canvas id="barAlunos"></canvas>
+    </div>
+    <div class="card">
+      <h3>Evolução média do grupo (por dia)</h3>
+      <canvas id="lineGrupo"></canvas>
+    </div>
+  </section>
+
+  <script>
+    const alunoLabels = [{% for a in aluno_medias %}"{{ a.nome }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+    const alunoData = [{% for a in aluno_medias %}{{ a.overall }}{% if not forloop.last %},{% endif %}{% endfor %}];
+
+    const lineLabels = [{% for d in por_dia_list %}"{{ d.data }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+    const lineData = [{% for d in por_dia_list %}{{ d.media }}{% if not forloop.last %},{% endif %}{% endfor %}];
+
+    new Chart(document.getElementById('barAlunos'), {
+      type: 'bar',
+      data: { labels: alunoLabels, datasets: [{ label: 'Média (0-10)', data: alunoData }]},
+      options: { responsive: true, scales: { y: { beginAtZero: true, max: 10 } } }
+    });
+
+    new Chart(document.getElementById('lineGrupo'), {
+      type: 'line',
+      data: { labels: lineLabels, datasets: [{ label: 'Média do Grupo', data: lineData, tension: 0.2 }]},
+      options: { responsive: true, scales: { y: { beginAtZero: true, max: 10 } } }
+    });
+  </script>
+{% endblock %}

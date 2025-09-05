@@ -1,0 +1,26 @@
+{% extends 'produtividade/base.html' %}
+{% block title %}Grupos{% endblock %}
+{% block content %}
+  <div class="list-header">
+    <h1>Grupos</h1>
+    <a class="btn primary" href="{% url 'produtividade:group_create' %}">Novo Grupo</a>
+  </div>
+  <table class="table">
+    <thead><tr><th>Nome</th><th>Descrição</th><th>Ações</th></tr></thead>
+    <tbody>
+      {% for g in grupos %}
+        <tr>
+          <td>{{ g.nome }}</td>
+          <td>{{ g.descricao|default:'—' }}</td>
+          <td class="gap">
+            <a class="btn" href="{% url 'produtividade:group_update' g.id %}">Editar</a>
+            <a class="btn" href="{% url 'produtividade:launch_productivity' g.id %}">Lançar Produtividade</a>
+            <a class="btn" href="{% url 'produtividade:group_report' g.id %}">Relatório</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="3">Nenhum grupo cadastrado.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

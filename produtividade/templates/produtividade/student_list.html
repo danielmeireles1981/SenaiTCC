@@ -1,0 +1,25 @@
+{% extends 'produtividade/base.html' %}
+{% block title %}Alunos{% endblock %}
+{% block content %}
+  <div class="list-header">
+    <h1>Alunos</h1>
+    <a class="btn primary" href="{% url 'produtividade:student_create' %}">Novo Aluno</a>
+  </div>
+  <table class="table">
+   <thead>
+  <tr><th>Nome</th><th>Turma</th><th>Grupo</th><th>Ações</th></tr>  <!-- <— trocado -->
+</thead>
+<tbody>
+  {% for a in alunos %}
+    <tr>
+      <td>{{ a.nome }}</td>
+      <td>{{ a.turma }}</td>     <!-- <— trocado -->
+      <td>{{ a.grupo }}</td>
+      <td><a class="btn" href="{% url 'produtividade:student_update' a.id %}">Editar</a></td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="4">Nenhum aluno cadastrado.</td></tr>
+  {% endfor %}
+</tbody>
+  </table>
+{% endblock %}

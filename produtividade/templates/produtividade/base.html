@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Gestão de Produtividade TCC{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'produtividade/styles.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">SENAI Agile • TCC</div>
+    <nav class="nav">
+      <a href="{% url 'produtividade:group_list' %}">Grupos</a>
+      <a href="{% url 'produtividade:project_list' %}">Projetos</a>
+      <a href="{% url 'produtividade:student_list' %}">Alunos</a>
+      {% if user.is_authenticated %}
+        <span class="user">Olá, {{ user.get_username }}</span>
+        <a class="logout" href="{% url 'logout' %}">Sair</a>
+      {% else %}
+        <a class="login" href="{% url 'login' %}">Entrar</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">© {% now "Y" %} • Gestão de Produtividade</footer>
+</body>
+</html>
