@@ -85,7 +85,7 @@
         }
 
         .container {
-            
+
             margin: 30px 100px;
             background: var(--white);
             padding: 32px;
@@ -105,7 +105,7 @@
             display: inline-block;
             padding: 12px 24px;
             border-radius: 8px;
-            background: var(--gray-light);
+            background: #aaa;
             text-decoration: none;
             color: var(--black);
             border: none;
@@ -500,7 +500,7 @@
             }
         }
 
-        
+
         html,
         body {
             height: 100%;
@@ -524,3 +524,94 @@
             /* substitui o margin-top: 40px; */
             /* mantém seus estilos existentes: background, padding, etc. */
         }
+
+        /* ---- Modal ---- */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            /* oculto por padrão */
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-dialog {
+            background: var(--white);
+            width: min(95vw, 900px);
+            max-height: 85vh;
+            overflow: auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 24px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: transparent;
+            border: 0;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--gray-dark);
+        }
+
+        .modal-close:hover {
+            color: var(--red-primary);
+        }
+
+        .criteria-block {
+            margin-bottom: 18px;
+        }
+
+        .criteria-block h3 {
+            color: var(--red-dark);
+            margin: 8px 0;
+        }
+
+        .criteria-block ul {
+            margin: 6px 0 6px 18px;
+        }
+
+        .criteria-block p {
+            margin: 0 0 8px;
+            color: var(--gray-medium);
+        }
+
+        /* empurra o botão até a borda direita dentro do flex da .filters */
+        .push-right {
+            margin-left: auto;
+        }
+
+        /* em telas estreitas, deixa o botão em uma linha própria, alinhado à direita */
+        @media (max-width: 900px) {
+            .push-right {
+                margin-left: 0;
+                display: block;
+                margin-left: auto;
+                /* mantém encostado à direita */
+            }
+        }
+
+    .carregar{
+        background-color: #419b46;
+        color: #fff;
+    }
+
+    .editar{
+        background-color: #e95353;
+        color: #fff;
+    }
+
+    .relatorio{
+        background-color: #7173dd;
+        color: #fff;
+    }

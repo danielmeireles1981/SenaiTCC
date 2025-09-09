@@ -20,8 +20,67 @@
     </select>
   </div>
 
-  <button class="btn">Carregar</button>
+  <button class="btn carregar">Carregar</button>
+  <button type="button" class="btn accent push-right" id="openCriteria">Guia de critérios</button>
 </form>
+
+<!-- Modal Guia de Critérios -->
+<div id="criteriaModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="criteriaTitle">
+  <div class="modal-dialog">
+    <button class="modal-close" id="closeCriteria" aria-label="Fechar">&times;</button>
+    <h2 id="criteriaTitle">Guia de critérios — UC Projetos</h2>
+
+    <section class="criteria-block">
+      <h3>Pontualidade → Autogestão / Gestão do Tempo</h3>
+      <ul>
+        <li><strong>Autogestão (Pontualidade &amp; Assiduidade)</strong></li>
+        <li><strong>Gestão do Tempo</strong></li>
+        <li><strong>Cumprimento de Prazos</strong></li>
+      </ul>
+      <p><em>Justifica:</em> a UC explicita “Demonstrar autogestão” nas capacidades socioemocionais.</p>
+    </section>
+
+    <section class="criteria-block">
+      <h3>Comunicação → Comunicação &amp; Trabalho em Equipe</h3>
+      <ul>
+        <li><strong>Comunicação &amp; Trabalho em Equipe</strong></li>
+        <li><strong>Colaboração &amp; Inteligência Emocional</strong></li>
+        <li><strong>Interação Profissional</strong></li>
+      </ul>
+      <p><em>Justifica:</em> “Inteligência emocional” e “Trabalhar em equipe” são capacidades socioemocionais previstas na UC.</p>
+    </section>
+
+    <section class="criteria-block">
+      <h3>Qualidade do Código → Qualidade de Software</h3>
+      <ul>
+        <li><strong>Qualidade de Software</strong></li>
+        <li><strong>Boas Práticas &amp; Qualidade</strong></li>
+        <li><strong>Manutenibilidade &amp; Padrões</strong></li>
+      </ul>
+      <p><em>Justifica:</em> a UC traz “Qualidade de software” em conhecimentos e enfatiza melhores práticas considerando performance e qualidade.</p>
+    </section>
+
+    <section class="criteria-block">
+      <h3>Entrega de Tarefas → Gestão de Cronograma &amp; Entregas</h3>
+      <ul>
+        <li><strong>Gestão de Cronograma &amp; Entregas</strong></li>
+        <li><strong>Planejamento &amp; Cumprimento de Etapas</strong></li>
+        <li><strong>Sequenciamento &amp; Cronograma</strong></li>
+      </ul>
+      <p><em>Justifica:</em> capacidades técnicas da UC incluem definir a sequência das atividades e elaborar cronograma integrado às etapas.</p>
+    </section>
+
+    <section class="criteria-block">
+      <h3>Resolução de Problemas → Pensamento Analítico &amp; Resolução</h3>
+      <ul>
+        <li><strong>Pensamento Analítico &amp; Resolução de Problemas</strong></li>
+        <li><strong>Pesquisa de Soluções &amp; Melhores Práticas</strong></li>
+        <li><strong>Diagnóstico &amp; Correção</strong></li>
+      </ul>
+      <p><em>Justifica:</em> a UC prevê “pensamento analítico” (socioemocional) e a capacidade técnica de pesquisar melhores práticas visando performance/qualidade.</p>
+    </section>
+  </div>
+</div>
 
 
   <form method="post">
@@ -29,23 +88,23 @@
   {{ formset.management_form }}  <!-- 👈 OBRIGATÓRIO PARA FORMSETS -->
 
   <table class="table">
-    <thead>
+    <thead >
       <tr>
-        <th>Aluno</th>
-        <th>Pontualidade</th>
-        <th>Comunicação</th>
-        <th>Qualidade do Código</th>
-        <th>Entrega de Tarefas</th>
-        <th>Resolução de Problemas</th>
-        <th>Observações</th>
+        <th style="text-align: center;">Aluno</th>
+        <th style="text-align: center;">Pontualidade</th>
+        <th style="text-align: center;">Comunicação</th>
+        <th style="text-align: center;">Qualidade do Código</th>
+        <th style="text-align: center;">Entrega de Tarefas</th>
+        <th style="text-align: center;">Resolução de Problemas</th>
+        <th style="text-align: center;">Observações</th>
       </tr>
     </thead>
     <tbody>
       {% for form in formset %}
         <tr>
-          <td>
+          <td width="400px">
             {{ form.aluno_id }} {{ form.aluno_nome }}
-            {{ form.data }} {{ form.projeto }}
+            
           </td>
           <td>{{ form.pontualidade }}</td>
           <td>{{ form.comunicacao }}</td>
@@ -60,4 +119,34 @@
 
   <button class="btn primary" type="submit">Salvar Lançamentos</button>
 </form>
+
+<script>
+  (function(){
+    const modal = document.getElementById('criteriaModal');
+    const openBtn = document.getElementById('openCriteria');
+    const closeBtn = document.getElementById('closeCriteria');
+
+    function openModal() {
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      // foco acessível
+      closeBtn.focus();
+      document.addEventListener('keydown', escListener);
+    }
+    function closeModal() {
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+      openBtn.focus();
+      document.removeEventListener('keydown', escListener);
+    }
+    function escListener(e){ if (e.key === 'Escape') closeModal(); }
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e){
+      if (e.target === modal) closeModal(); // clique fora fecha
+    });
+  })();
+</script>
+
 {% endblock %}

@@ -6,16 +6,16 @@
     <a class="btn primary" href="{% url 'produtividade:group_create' %}">Novo Grupo</a>
   </div>
   <table class="table">
-    <thead><tr><th>Nome</th><th>Descrição</th><th>Ações</th></tr></thead>
+    <thead><tr><th>Nome</th><th>Descrição</th><th style="text-align: center;";>Ações</th></tr></thead>
     <tbody>
       {% for g in grupos %}
         <tr>
           <td>{{ g.nome }}</td>
           <td>{{ g.descricao|default:'—' }}</td>
-          <td class="gap">
+          <td class="gap" style="text-align: center;">
             <a class="btn" href="{% url 'produtividade:group_update' g.id %}">Editar</a>
-            <a class="btn" href="{% url 'produtividade:launch_productivity' g.id %}">Lançar Produtividade</a>
-            <a class="btn" href="{% url 'produtividade:group_report' g.id %}">Relatório</a>
+            <a class="btn carregar" href="{% url 'produtividade:launch_productivity' g.id %}">Lançar Produtividade</a>
+            <a class="btn relatorio" href="{% url 'produtividade:group_report' g.id %}">Relatório</a>
           </td>
         </tr>
       {% empty %}

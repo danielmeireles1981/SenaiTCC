@@ -1,18 +1,18 @@
 {% extends 'produtividade/base.html' %}
 {% block title %}Relatório do Grupo{% endblock %}
 {% block content %}
+  
   <div class="list-header">
     <h1>Relatório • {{ grupo.nome }}</h1>
     <div class="gap">
-      <a class="btn" href="{% url 'produtividade:launch_productivity' grupo.id %}">Lançar/Editar</a>
-      <a class="btn" href="{% url 'produtividade:group_report_pdf' grupo.id %}?dias={{ dias }}">Exportar PDF</a>
-      <a class="btn" href="{% url 'produtividade:send_report_email' grupo.id %}?dias={{ dias }}">Enviar à Coordenação</a>
+      <a class="btn editar" href="{% url 'produtividade:launch_productivity' grupo.id %}">Lançar/Editar</a>
+      <a class="btn relatorio" href="{% url 'produtividade:group_report_pdf' grupo.id %}?dias={{ dias }}">Exportar PDF</a>
     </div>
   </div>
 
   <form method="get" class="filters">
-    <label>Últimos (dias): <input type="number" name="dias" value="{{ dias }}" min="1"></label>
-    <button class="btn">Aplicar</button>
+    <strong>Últimos Dias: </strong><label><input type="number" name="dias" value="{{ dias }}" min="1" class="input-field"></label>
+    <button class="btn editar">Aplicar</button>
   </form>
 
   <section class="cards">
