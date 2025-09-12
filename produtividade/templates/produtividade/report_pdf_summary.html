@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: 12px;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 8px;
+      }
+      h2 {
+        margin: 10px 0 6px;
+      }
+      .meta {
+        text-align: center;
+        margin-bottom: 12px;
+      }
+      .chart {
+        text-align: center;
+        margin: 12px 0;
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 6px;
+      }
+      th,
+      td {
+        border: 1px solid #999;
+        padding: 10px 4px 4px 4px;
+        vertical-align: top;
+      }
+      th {
+        background: #eee;
+      }
+      
+      /* deixa a coluna de observações mais larga */
+      th:nth-child(3),
+      td:nth-child(3) {
+        width: 80%;
+      }
+      
+      .criteria-block {
+        margin: 6px 0;
+      }
+      .criteria-block h3 {
+        margin: 4px 0;
+      }
+      .criteria-block ul {
+        margin: 4px 0 4px 18px;
+      }
+      .criteria-block p {
+        margin: 0 0 6px;
+      }
+      
+      .kpi {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 30px;
+        
+      }
+     
+    </style>
+  </head>
+  <body>
+
+    <h1>Relatório TCC - {{ grupo.nome }}</h1>
+
+  
+    <div class="meta">Período: {{ inicio }} a {{ fim }}</div>
+      <hr>
+
+    <h2 class="kpi">Nota geral média do período: {{ nota_media_geral|floatformat:2 }}</h2>
+  <hr>
+    {% if bar_png_b64 %}
+      <h2 style="margin-top: 30px;">Média por aluno (período selecionado)</h2>
+      <div class="chart">
+        <!-- gráfico de barras maior -->
+        <img src="data:image/png;base64,{{ bar_png_b64 }}" width="1000px" />
+      </div>
+
+      <!-- Tabela unificada: Aluno | Média | Observações -->
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 50%;">Aluno</th>
+            <th style="width: 10%;">Média</th>
+            <th>Observações (até 5 mais recentes)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in aluno_rows %}
+            <tr>
+              <td>{{ row.nome }}</td>
+              <td style="text-align:center">{{ row.media|floatformat:2 }}</td>
+              <td>
+                {% if row.obs_list and row.obs_list|length > 0 %}
+                  {% for obs in row.obs_list %}
+                    - {{ obs }}<br />
+                  {% endfor %}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="3">Sem dados no período selecionado.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Sem dados de alunos no período selecionado.</p>
+    {% endif %}
+
+    <hr style="margin-top: 150px;">
+    <h2>Guia de critérios — UC Projetos</h2>
+
+    <section class="criteria-block">
+      <h3>Pontualidade → Autogestão / Gestão do Tempo</h3>
+      <ul>
+        <li>
+          <strong>Autogestão (Pontualidade &amp; Assiduidade)</strong>
+        </li>
+        <li>
+          <strong>Gestão do Tempo</strong>
+        </li>
+        <li>
+          <strong>Cumprimento de Prazos</strong>
+        </li>
+      </ul>
+      <p>
+        <em>Justifica:</em> a UC explicita "Demonstrar autogestão" nas capacidades socioemocionais.
+      </p>
+    </section>
+
+    <section class="criteria-block">
+      <h3>Comunicação → Comunicação &amp; Trabalho em Equipe</h3>
+      <ul>
+        <li>
+          <strong>Comunicação &amp; Trabalho em Equipe</strong>
+        </li>
+        <li>
+          <strong>Colaboração &amp; Inteligência Emocional</strong>
+        </li>
+        <li>
+          <strong>Interação Profissional</strong>
+        </li>
+      </ul>
+      <p>
+        <em>Justifica:</em> "Inteligência emocional" e "Trabalhar em equipe" são capacidades socioemocionais previstas na UC.
+      </p>
+    </section>
+
+    <section class="criteria-block">
+      <h3>Qualidade do Código → Qualidade de Software</h3>
+      <ul>
+        <li>
+          <strong>Qualidade de Software</strong>
+        </li>
+        <li>
+          <strong>Boas Práticas &amp; Qualidade</strong>
+        </li>
+        <li>
+          <strong>Manutenibilidade &amp; Padrões</strong>
+        </li>
+      </ul>
+      <p>
+        <em>Justifica:</em> a UC traz "Qualidade de software" em conhecimentos e enfatiza melhores práticas considerando performance e qualidade.
+      </p>
+    </section>
+
+    <section class="criteria-block">
+      <h3>Entrega de Tarefas → Gestão de Cronograma &amp; Entregas</h3>
+      <ul>
+        <li>
+          <strong>Gestão de Cronograma &amp; Entregas</strong>
+        </li>
+        <li>
+          <strong>Planejamento &amp; Cumprimento de Etapas</strong>
+        </li>
+        <li>
+          <strong>Sequenciamento &amp; Cronograma</strong>
+        </li>
+      </ul>
+      <p>
+        <em>Justifica:</em> capacidades técnicas da UC incluem definir a sequência das atividades e elaborar cronograma integrado às etapas.
+      </p>
+    </section>
+
+    <section class="criteria-block">
+      <h3>Resolução de Problemas → Pensamento Analítico &amp; Resolução</h3>
+      <ul>
+        <li>
+          <strong>Pensamento Analítico &amp; Resolução de Problemas</strong>
+        </li>
+        <li>
+          <strong>Pesquisa de Soluções &amp; Melhores Práticas</strong>
+        </li>
+        <li>
+          <strong>Diagnóstico &amp; Correção</strong>
+        </li>
+      </ul>
+      <p>
+        <em>Justifica:</em> a UC prevê "pensamento analítico" (socioemocional) e a capacidade técnica de pesquisar melhores práticas visando performance/qualidade.
+      </p>
+    </section>
+  </body>
+</html>

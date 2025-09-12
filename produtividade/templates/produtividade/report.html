@@ -1,48 +1,128 @@
 {% extends 'produtividade/base.html' %}
 {% block title %}Relatório do Grupo{% endblock %}
 {% block content %}
-  
+
   <div class="list-header">
     <h1>Relatório • {{ grupo.nome }}</h1>
     <div class="gap">
       <a class="btn editar" href="{% url 'produtividade:launch_productivity' grupo.id %}">Lançar/Editar</a>
-      <a class="btn relatorio" href="{% url 'produtividade:group_report_pdf' grupo.id %}?dias={{ dias }}">Exportar PDF</a>
+      <a class="btn relatorio" href="{% url 'produtividade:group_report_pdf_summary' grupo.id %}?{{ request.GET.urlencode }}">
+        Exportar PDF
+      </a>
     </div>
   </div>
 
   <form method="get" class="filters">
-    <strong>Últimos Dias: </strong><label><input type="number" name="dias" value="{{ dias }}" min="1" class="input-field"></label>
+    <div class="input-group">
+      <label class="input-label">Início</label>
+      <input type="date" name="inicio" value="{{ inicio }}" class="input-field">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Fim</label>
+      <input type="date" name="fim" value="{{ fim }}" class="input-field">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Aluno</label>
+      <select name="aluno" class="input-field">
+        <option value="">Todos</option>
+        {% for a in alunos %}
+          <option value="{{ a.id }}"{% if aluno_sel and a.id == aluno_sel.id %} selected{% endif %}>{{ a.nome }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Ou últimos (dias)</label>
+      <input type="number" name="dias" value="{{ dias }}" min="1" class="input-field">
+    </div>
     <button class="btn editar">Aplicar</button>
+    <a class="btn" href="{% url 'produtividade:group_report' grupo.id %}">Limpar</a>
   </form>
 
-  <section class="cards">
-    <div class="card">
-      <h3>Média geral por aluno</h3>
-      <canvas id="barAlunos"></canvas>
+  <!-- GRID MAIS ESTÁVEL: 2 colunas em desktop; gráficos ocupam largura total -->
+  <section class="cards report-grid">
+    <div class="card kpi-card">
+      <h3>Nota geral média {% if aluno_sel %}— {{ aluno_sel.nome }}{% else %}do grupo{% endif %}</h3>
+      <div style="font-size:2rem; font-weight:800;">{{ nota_media_geral|floatformat:2 }}</div>
+      <div class="input-helper">Período: {{ inicio }} a {{ fim }}</div>
     </div>
-    <div class="card">
-      <h3>Evolução média do grupo (por dia)</h3>
-      <canvas id="lineGrupo"></canvas>
+
+    <div class="card chart-card span-full">
+      <h3>Média geral por aluno</h3>
+      <div class="chart-wrap">
+        <canvas id="barAlunos"></canvas>
+      </div>
+    </div>
+
+    <div class="card chart-card span-full">
+      <h3>Evolução média {% if aluno_sel %}do aluno{% else %}do grupo{% endif %} (por dia)</h3>
+      <div class="chart-wrap">
+        <canvas id="lineGrupo"></canvas>
+      </div>
     </div>
   </section>
 
   <script>
+    // ---- Dados vindos do contexto ----
     const alunoLabels = [{% for a in aluno_medias %}"{{ a.nome }}"{% if not forloop.last %},{% endif %}{% endfor %}];
-    const alunoData = [{% for a in aluno_medias %}{{ a.overall }}{% if not forloop.last %},{% endif %}{% endfor %}];
+    const alunoData   = [{% for a in aluno_medias %}{{ a.overall }}{% if not forloop.last %},{% endif %}{% endfor %}];
 
     const lineLabels = [{% for d in por_dia_list %}"{{ d.data }}"{% if not forloop.last %},{% endif %}{% endfor %}];
-    const lineData = [{% for d in por_dia_list %}{{ d.media }}{% if not forloop.last %},{% endif %}{% endfor %}];
+    const lineData   = [{% for d in por_dia_list %}{{ d.media }}{% if not forloop.last %},{% endif %}{% endfor %}];
 
-    new Chart(document.getElementById('barAlunos'), {
+    // ---- Gráfico de barras: horizontal quando houver muitos alunos ----
+    const barCanvas = document.getElementById('barAlunos');
+    const manyBars = alunoLabels.length > 10;
+    // altura dinâmica (22px por barra, mínimo 260)
+    barCanvas.height = Math.max(260, alunoLabels.length * (manyBars ? 22 : 18));
+
+    new Chart(barCanvas, {
       type: 'bar',
-      data: { labels: alunoLabels, datasets: [{ label: 'Média (0-10)', data: alunoData }]},
-      options: { responsive: true, scales: { y: { beginAtZero: true, max: 10 } } }
+      data: {
+        labels: alunoLabels,
+        datasets: [{ label: 'Média (0-10)', data: alunoData }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: manyBars ? 'y' : 'x',
+        plugins: {
+          legend: { display: false },
+          tooltip: { mode: 'nearest', intersect: false }
+        },
+        scales: {
+          x: manyBars
+            ? { beginAtZero: true, max: 10 }
+            : { beginAtZero: true, max: 10, ticks: { autoSkip: true, maxRotation: 30, minRotation: 0 } },
+          y: manyBars
+            ? { ticks: { autoSkip: false } }
+            : {}
+        },
+        layout: { padding: { right: 10 } }
+      }
     });
 
-    new Chart(document.getElementById('lineGrupo'), {
+    // ---- Gráfico de linha: largura total + altura fixa confortável ----
+    const lineCanvas = document.getElementById('lineGrupo');
+    lineCanvas.height = 300;
+
+    new Chart(lineCanvas, {
       type: 'line',
-      data: { labels: lineLabels, datasets: [{ label: 'Média do Grupo', data: lineData, tension: 0.2 }]},
-      options: { responsive: true, scales: { y: { beginAtZero: true, max: 10 } } }
+      data: {
+        labels: lineLabels,
+        datasets: [{ label: '{{ serie_label }}', data: lineData, tension: 0.2, pointRadius: 2 }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+          y: { beginAtZero: true, max: 10 },
+          x: { ticks: { autoSkip: true, maxRotation: 0, minRotation: 0 } }
+        }
+      }
     });
   </script>
 {% endblock %}

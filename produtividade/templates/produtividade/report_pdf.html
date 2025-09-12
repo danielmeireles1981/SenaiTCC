@@ -14,8 +14,10 @@
   </style>
 </head>
 <body>
-  <h1>Relatório de Produtividade • {{ grupo.nome }}</h1>
-  <div class="meta">Período: últimos {{ dias }} dias</div>
+  <h1>Relatório de Produtividade - {{ grupo.nome }}</h1>
+  <div class="meta">
+    Período: {{ inicio }} a {{ fim }} — Nota geral média: <strong>{{ nota_media_geral|floatformat:2 }}</strong>
+  </div>
 
   {% if bar_png_b64 %}
     <h2>Média geral por aluno</h2>
@@ -23,7 +25,7 @@
   {% endif %}
 
   {% if line_png_b64 %}
-    <h2>Evolução média do grupo (por dia)</h2>
+    <h2>Evolução média (por dia)</h2>
     <div class="chart"><img src="data:image/png;base64,{{ line_png_b64 }}" width="600"/></div>
   {% endif %}
 
@@ -46,7 +48,7 @@
           <td>{{ e.qualidade_codigo }}</td>
           <td>{{ e.entrega_tarefas }}</td>
           <td>{{ e.resolucao_problemas }}</td>
-          <td>{{ e.total|floatformat:2 }}</td>
+          <td>{{ e.media_calc|floatformat:2 }}</td>
           <td>{{ e.observacoes }}</td>
         </tr>
       {% endfor %}

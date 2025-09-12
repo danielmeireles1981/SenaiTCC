@@ -601,17 +601,54 @@
             }
         }
 
-    .carregar{
-        background-color: #419b46;
-        color: #fff;
-    }
+        .carregar {
+            background-color: #419b46;
+            color: #fff;
+        }
 
-    .editar{
-        background-color: #e95353;
-        color: #fff;
-    }
+        .editar {
+            background-color: #e95353;
+            color: #fff;
+        }
 
-    .relatorio{
-        background-color: #7173dd;
-        color: #fff;
-    }
+        .relatorio {
+            background-color: #7173dd;
+            color: #fff;
+        }
+
+        /* GRID do relatório: 1 col (mobile) -> 2 cols (desktop). Gráficos ocupam largura total */
+        .report-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .span-full {
+            grid-column: 1 / -1;
+        }
+
+        @media (min-width: 992px) {
+            .report-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .kpi-card {
+                grid-column: auto;
+            }
+
+            .chart-card.span-full {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* Contêiner do canvas com overflow seguro */
+        .chart-wrap {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .chart-card canvas {
+            width: 100% !important;
+            display: block;
+        }

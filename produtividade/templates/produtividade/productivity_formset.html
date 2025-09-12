@@ -13,9 +13,10 @@
     <label class="input-label">Projeto</label>
     <select name="projeto" class="input-field">
       {% for proj in projetos %}
-        <option value="{{ proj.id }}" {% if proj.id|stringformat:"s" == request.GET.projeto %}selected{% endif %}>
-          {{ proj.titulo }}
-        </option>
+        <option value="{{ proj.id }}"{% if projeto_sel and proj.id == projeto_sel.id %} selected{% endif %}>
+  {{ proj.titulo }}
+</option>
+
       {% endfor %}
     </select>
   </div>
@@ -96,6 +97,7 @@
         <th style="text-align: center;">Qualidade do Código</th>
         <th style="text-align: center;">Entrega de Tarefas</th>
         <th style="text-align: center;">Resolução de Problemas</th>
+        <th style="text-align: center;">Média</th>
         <th style="text-align: center;">Observações</th>
       </tr>
     </thead>
@@ -104,13 +106,20 @@
         <tr>
           <td width="400px">
             {{ form.aluno_id }} {{ form.aluno_nome }}
-            
+            {{ form.data.as_hidden }}     <!-- precisa ir no POST -->
+            {{ form.projeto.as_hidden }}  <!-- precisa ir no POST -->
           </td>
           <td>{{ form.pontualidade }}</td>
           <td>{{ form.comunicacao }}</td>
           <td>{{ form.qualidade_codigo }}</td>
           <td>{{ form.entrega_tarefas }}</td>
           <td>{{ form.resolucao_problemas }}</td>
+          <td class="text-right">
+                {% if form.media_historico != None %}
+                  {{ form.media_historico|floatformat:2 }}
+                {% else %}—{% endif %}
+              </td>
+
           <td>{{ form.observacoes }}</td>
         </tr>
       {% endfor %}

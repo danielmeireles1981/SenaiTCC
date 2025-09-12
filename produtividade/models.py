@@ -48,6 +48,12 @@ class DailyEntry(models.Model):
 
     class Meta:
         unique_together = ('data', 'aluno', 'projeto')
+        
+        indexes = [
+            models.Index(fields=['grupo', 'data']),
+            models.Index(fields=['grupo', 'aluno', 'data']),
+            models.Index(fields=['grupo', 'projeto', 'data']),
+        ]
 
     def total(self):
         return sum([

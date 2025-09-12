@@ -22,4 +22,6 @@ urlpatterns = [
     path('relatorio/<int:group_id>/', views.GroupReportView.as_view(), name='group_report'),
     path('relatorio/<int:group_id>/pdf/', views.group_report_pdf, name='group_report_pdf'),
     path('relatorio/<int:group_id>/enviar/', views.send_report_email, name='send_report_email'),
+
+    path("relatorio/<int:group_id>/pdf-sintetico/", views.group_report_pdf_summary, name="group_report_pdf_summary"),
 ]
