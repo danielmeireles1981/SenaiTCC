@@ -566,3 +566,32 @@ def group_report_pdf_summary(request, group_id):
         return HttpResponse('Erro ao gerar PDF sintético', status=500)
 
     return HttpResponse(result.getvalue(), content_type='application/pdf')
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
+from .forms import TextNoteForm
+from .models import Group
+from .models import TextNote
+
+@login_required
+def text_note_create(request):
+    """
+    Registro de observação livre (apenas texto) associada a 1+ grupos.
+    Não altera lançamentos de produtividade.
+    """
+    if request.method == 'POST':
+        form = TextNoteForm(request.POST)
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.autor = request.user
+            note.save()
+            form.save_m2m()
+            messages.success(request, 'Observação registrada com sucesso.')
+            return redirect('produtividade:text_note_create')
+    else:
+        form = TextNoteForm()
+
+    notes = TextNote.objects.select_related('autor').prefetch_related('grupos')[:20]
+    return render(request, 'produtividade/text_note_form.html', {'form': form, 'notes': notes})

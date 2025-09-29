@@ -1,0 +1,69 @@
+{% extends 'produtividade/base.html' %}
+{% block title %}Nova Observação{% endblock %}
+{% block content %}
+
+<h1>Registrar Observação</h1>
+
+<div class="container">
+  <form method="post" class="form-section">
+    {% csrf_token %}
+
+    <!-- Campo de texto -->
+    <div class="input-group">
+      <label class="input-label" for="{{ form.texto.id_for_label }}">
+        {{ form.texto.label }}
+      </label>
+      {{ form.texto }}
+      <small class="input-helper">Essa observação não impacta a produtividade.</small>
+      {% if form.texto.errors %}
+        <small class="input-helper error">{{ form.texto.errors|striptags }}</small>
+      {% endif %}
+    </div>
+
+    <!-- Checkboxes de grupos -->
+    <div class="input-group">
+      <label class="input-label">{{ form.grupos.label }}</label>
+
+      <div>
+        {# Renderização manual para aplicar seu visual de checkbox #}
+        {% for checkbox in form.grupos %}
+          <label class="checkbox-group" style="display:flex;align-items:center;margin-bottom:8px;">
+            {{ checkbox.tag }}
+            <span class="checkbox-label" style="margin-left:8px;">{{ checkbox.choice_label }}</span>
+          </label>
+        {% endfor %}
+      </div>
+
+      {% if form.grupos.errors %}
+        <small class="input-helper error">{{ form.grupos.errors|striptags }}</small>
+      {% endif %}
+    </div>
+
+    <div class="list-header" style="justify-content:flex-end; margin-top:12px;">
+      <a href="javascript:history.back()" class="btn">Voltar</a>
+      <button type="submit" class="btn primary">Salvar Observação</button>
+    </div>
+  </form>
+</div>
+
+{% if notes %}
+  <h2 style="margin-top:24px;">Últimas Observações</h2>
+  <table class="table">
+    <thead><tr><th>Data</th><th>Autor</th><th>Grupos</th><th>Texto</th></tr></thead>
+    <tbody>
+      {% for n in notes %}
+        <tr>
+          <td>{{ n.criado_em|date:"d/m/Y H:i" }}</td>
+          <td>{{ n.autor|default:"-" }}</td>
+          <td>
+            {% for g in n.grupos.all %}{{ g.nome }}{% if not forloop.last %}, {% endif %}{% endfor %}
+          </td>
+          <td>{{ n.texto }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+
+{% endblock %}

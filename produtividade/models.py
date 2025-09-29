@@ -66,3 +66,20 @@ class DailyEntry(models.Model):
 
     def __str__(self):
         return f"{self.data} - {self.aluno} ({self.grupo})"
+
+from django.conf import settings
+from django.db import models
+
+class TextNote(models.Model):
+    grupos = models.ManyToManyField('produtividade.Group', related_name='text_notes')
+    texto = models.TextField('Observação')
+    criado_em = models.DateTimeField(auto_now_add=True)
+    autor = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL
+    )
+
+    class Meta:
+        ordering = ['-criado_em']
+
+    def __str__(self):
+        return f"Obs de {self.autor or 'N/D'} em {self.criado_em:%d/%m/%Y %H:%M}"

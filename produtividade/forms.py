@@ -75,3 +75,22 @@ class DailyEntryItemForm(forms.Form):
         widget=forms.Textarea(attrs={'class': INPUT_CSS, 'rows': 2, 'placeholder': 'Observações'}))
 
 DailyEntryFormSet = formset_factory(DailyEntryItemForm, extra=0)
+
+from django import forms
+from .models import TextNote
+
+class TextNoteForm(forms.ModelForm):
+    class Meta:
+        model = TextNote
+        fields = ['grupos', 'texto']
+        widgets = {
+            'grupos': forms.CheckboxSelectMultiple(attrs={'class': 'checkbox-list'}),
+            'texto': forms.Textarea(attrs={
+                'rows': 6, 'placeholder': 'Escreva sua observação...',
+                'class': 'input-field'
+            }),
+        }
+        labels = {
+            'grupos': 'Grupos (selecione 1 ou mais)',
+            'texto': 'Observação (não impacta produtividade)',
+        }

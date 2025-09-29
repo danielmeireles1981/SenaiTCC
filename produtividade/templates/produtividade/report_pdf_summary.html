@@ -74,7 +74,7 @@
     <div class="meta">Período: {{ inicio }} a {{ fim }}</div>
       <hr>
 
-    <h2 class="kpi">Nota geral média do período: {{ nota_media_geral|floatformat:2 }}</h2>
+    <h2 class="kpi">Nota geral média do período (Escala de 0 a 10): {{ nota_media_geral|floatformat:2 }}</h2>
   <hr>
     {% if bar_png_b64 %}
       <h2 style="margin-top: 30px;">Média por aluno (período selecionado)</h2>

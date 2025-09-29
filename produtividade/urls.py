@@ -24,4 +24,5 @@ urlpatterns = [
     path('relatorio/<int:group_id>/enviar/', views.send_report_email, name='send_report_email'),
 
     path("relatorio/<int:group_id>/pdf-sintetico/", views.group_report_pdf_summary, name="group_report_pdf_summary"),
+    path('observacoes/nova/', views.text_note_create, name='text_note_create'),
 ]
